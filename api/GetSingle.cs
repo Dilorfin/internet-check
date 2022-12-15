@@ -6,22 +6,24 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace api;
 
-public static class GetAll
+public static class GetSingle
 {
-    [FunctionName("GetAll")]
+    // TODO: fix "security" issue
+    [FunctionName("GetSingle")]
     public static async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
         ILogger log)
     {
+        string id = req.Query["id"];
+
         string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
         var dbContext = new DatabaseContext(connectionString);
-        IEnumerable<ConnectionModel> list = await dbContext.GetAllConnections();
-
-        return new JsonResult(list);
+        
+        ConnectionModel connection = await dbContext.GetConnection(id);
+        return new JsonResult(connection);
     }
 }
