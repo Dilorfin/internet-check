@@ -1,3 +1,6 @@
-<p>
-	show-all works!
-</p>
+<div *ngFor="let item of connections">
+	<span>{{item.title}}</span>
+	<span [ngClass]="item.isOnline ? 'green' : 'red' ">
+		{{item.isOnline ? "Online" : "Offline"}}
+	</span>
+</div>

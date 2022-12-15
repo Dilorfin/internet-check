@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BackendService, ConnectionModel } from '../backend.service';
 
 @Component({
 	selector: 'app-show-all',
@@ -7,8 +8,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ShowAllComponent implements OnInit
 {
-	constructor() { }
+	public connections: ConnectionModel[] = [];
+
+	constructor(private backend: BackendService) { }
 
 	ngOnInit(): void
-	{ }
+	{
+		this.loadConnections();
+
+		setInterval(()=>this.loadConnections(), 10000);
+	}
+
+	private loadConnections()
+	{
+		this.backend.getAllConnections().subscribe({
+			next: (connections: ConnectionModel[]) =>
+			{
+				this.connections = connections;
+			},
+			error: (error: any) => console.error(error)
+		});
+	}
 }
